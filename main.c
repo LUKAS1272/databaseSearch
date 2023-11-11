@@ -17,6 +17,7 @@ node* createNode(char* value) {
         result->rightBranch = NULL;
     }
 
+    printf("Stored\n");
     return result;
 }
 
@@ -48,25 +49,25 @@ void findNode(node* root, char* value) {
 node* storeNode(node* root, char* value) {
     printf("storeNode, root value - %s\n", root->nodeValue);
 
-    while (1) {
-        if (strcmp(root->nodeValue, value) < 0) { // Lower than value
-            if (root->rightBranch != NULL) {
-                return storeNode(root->rightBranch, value);
-            } else {
-                printf("Stored\n");
-                return createNode(value);
-            }
-        } else if (strcmp(root->nodeValue, value) > 0) { // Higher than value
-            if (root->leftBranch != NULL) {
-                return storeNode(root->leftBranch, value);
-            } else {
-                printf("Stored\n");
-                return createNode(value);
-            }
-        } else { // Same as value
-            printf("Already stored - %s - %s\n", value, root->nodeValue);
+    if (strcmp(root->nodeValue, value) < 0) { // Lower than value
+        if (root->rightBranch != NULL) {
+            root->rightBranch = storeNode(root->rightBranch, value);
+            return root;
+        } else {
+            root->rightBranch = createNode(value);
             return root;
         }
+    } else if (strcmp(root->nodeValue, value) > 0) { // Higher than value
+        if (root->leftBranch != NULL) {
+            root->leftBranch = storeNode(root->leftBranch, value);
+            return root;
+        } else {
+            root->leftBranch = createNode(value);
+            return root;
+        }
+    } else { // Same as value
+        printf("Already stored - %s - %s\n", value, root->nodeValue);
+        return root;
     }
 
     // Find, whether the node exists
@@ -76,6 +77,20 @@ node* storeNode(node* root, char* value) {
 
 void deleteNode(node* root, char* value) {
     // Find, whether the node exists
+}
+
+node* mostTo(node* root, int side) {
+    if (side < 0) { // Most to left
+        if (root->leftBranch != NULL) {
+            return mostTo(root->leftBranch, -1);
+        }
+    } else if (side > 0) { // Most to right
+        if (root->rightBranch != NULL) {
+            return mostTo(root->rightBranch, 1);
+        }
+    }
+
+    return NULL;
 }
 
 int main() {
