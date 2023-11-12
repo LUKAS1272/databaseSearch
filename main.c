@@ -4,8 +4,8 @@
 
 typedef struct node {
     char* nodeValue;
-    struct node *leftBranch;
-    struct node *rightBranch;
+    struct node* leftBranch;
+    struct node* rightBranch;
 } node;
 
 node* createNode(char* value) {
@@ -47,8 +47,6 @@ void findNode(node* root, char* value) {
 }
 
 node* storeNode(node* root, char* value) {
-    printf("storeNode, root value - %s\n", root->nodeValue);
-
     if (strcmp(root->nodeValue, value) < 0) { // Lower than value
         if (root->rightBranch != NULL) {
             root->rightBranch = storeNode(root->rightBranch, value);
@@ -66,60 +64,64 @@ node* storeNode(node* root, char* value) {
             return root;
         }
     } else { // Same as value
-        printf("Already stored - %s - %s\n", value, root->nodeValue);
+        printf("Already stored\n", value, root->nodeValue);
         return root;
     }
-
-    // Find, whether the node exists
-    // If it does, write out "Already stored"
-    // Else store the node
 }
 
-node* mostTo(node* root, int side) {
-    if (side < 0) { // Most to left
-        if (root->leftBranch != NULL) {
-            return mostTo(root->leftBranch, -1);
-        }
-    } else if (side > 0) { // Most to right
-        if (root->rightBranch != NULL) {
-            return mostTo(root->rightBranch, 1);
-        }
+node* mostTo(node* root) {
+    if (root->rightBranch != NULL) {
+        free(root->nodeValue);
+        return mostTo(root->rightBranch);
+    } else {
+        return root;
     }
-
-    return NULL;
 }
 
-void deleteNode(node* root, char* value) {
-    node* currentNode = root;
+node* deleteNode(node* root, char* value) {
+    if (strcmp(root->nodeValue, value) < 0) { // Lower than value
+        if (root->rightBranch != NULL)
+            root->rightBranch = deleteNode(root->rightBranch, value);
+        else
+            printf("Not found\n");
 
-    while (1) {
-        if (strcmp(currentNode->nodeValue, value) < 0) { // Lower than value
-            if (currentNode->rightBranch != NULL) {
-                currentNode = currentNode->rightBranch;
-            } else {
-                printf("Not found\n");
-                return;
-            }
-        } else if (strcmp(currentNode->nodeValue, value) > 0) { // Higher than value
-            if (currentNode->leftBranch != NULL) {
-                currentNode = currentNode->leftBranch;
-            } else {
-                printf("Not found\n");
-                return;
-            }
-        } else { // Same as value
-            printf("Can be deleted\n");
-            if (currentNode->leftBranch != NULL) {
-                node* test = mostTo(currentNode->leftBranch, 1);
-            } else if (currentNode->rightBranch != NULL) {
-                node* test = mostTo(currentNode->rightBranch, -1);
-            } else {
-                // There is no child - leaf node
-                // How to delete a node?
-                // Mby hold pointer to parent
-                // To be solved
-            }
-            return;
+        return root;
+    } else if (strcmp(root->nodeValue, value) > 0) { // Higher than value
+        if (root->leftBranch != NULL)
+            root->leftBranch = deleteNode(root->leftBranch, value);
+        else
+            printf("Not found\n");
+
+        return root;
+    } else { // Same as value
+        if (root->leftBranch == NULL && root->rightBranch == NULL) { // Leaf node - no children
+            printf("Deleted\n");
+
+            //free(root->nodeValue);
+            //free(root);
+            return NULL;
+        } else if (root->leftBranch != NULL && root->rightBranch != NULL) { // Both children
+            node* temp = mostTo(root->leftBranch);
+            root = deleteNode(root, temp->nodeValue);
+            root->nodeValue = temp->nodeValue;
+
+            //free(temp->nodeValue);
+            //free(temp->leftBranch);
+            //free(temp->rightBranch);
+            //free(temp);
+            return root;
+        } else if (root->leftBranch != NULL) { // Only left child
+            printf("Deleted\n");
+
+            //free(root->nodeValue);
+            //free(root->rightBranch);
+            return root->leftBranch;
+        } else if (root->rightBranch != NULL) { // Only right child
+            printf("Deleted\n");
+
+            //free(root->nodeValue);
+            //free(root->leftBranch);
+            return root->rightBranch;
         }
     }
 }
@@ -127,18 +129,14 @@ void deleteNode(node* root, char* value) {
 int main() {
     node* root = NULL;
 
-    printf("%d", strcmp("30", "20"));
-
-    while (1) {
-        // Action scan
-        char action;
-        scanf("%c: ", &action);
+    char action;
+    while (scanf("%c: ", &action) != EOF) {
 
         // Node value scan
         char* value = realloc(NULL, 1);
         int valueLength = 0;
-
         char tempChar;
+
         do {
             scanf("%c", &tempChar);
 
@@ -149,26 +147,36 @@ int main() {
 
         switch (action) {
             case 'S':
-                printf("Store reached\n");
-                if (root != NULL) {
+                if (root != NULL)
                     root = storeNode(root, value);
-                }
-                else {
+                else
                     root = createNode(value);
-                    printf("First store - %s\n", root->nodeValue);
-                }
+
                 break;
             case 'F':
-                findNode(root, value);
+                if (root != NULL)
+                    findNode(root, value);
+                else
+                    printf("Not found\n");
+
                 break;
             case 'D':
-                printf("Not implemented yet\n");
+                if (root == NULL) {
+                    printf("Not found\n");
+                } else if (root->leftBranch == NULL && root->rightBranch == NULL) {
+                    if (strcmp(root->nodeValue, value) == 0) {
+                        root = NULL;
+                        printf("Deleted\n");
+                    } else {
+                        printf("Not found\n");
+                    }
+                } else if (root != NULL) {
+                    root = deleteNode(root, value);
+                }
                 break;
         }
-
-
-        //free(value);
     }
 
+    free(root);
     return 0;
 }

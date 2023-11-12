@@ -1,4 +1,4 @@
-# Install script for directory: /home/lukas/Desktop/C/databaseSearch
+# Install script for directory: /home/lukas1272/Desktop/C/databaseSearch
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/lukas/Desktop/C/databaseSearch/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/lukas1272/Desktop/C/databaseSearch/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
