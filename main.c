@@ -29,14 +29,14 @@ void findNode(node* root, char* value) {
             if (currentNode->rightBranch != NULL) {
                 currentNode = currentNode->rightBranch;
             } else {
-                printf("Not found");
+                printf("Not found\n");
                 return;
             }
         } else if (strcmp(currentNode->nodeValue, value) > 0) { // Higher than value
             if (currentNode->leftBranch != NULL) {
                 currentNode = currentNode->leftBranch;
             } else {
-                printf("Not found");
+                printf("Not found\n");
                 return;
             }
         } else { // Same as value
@@ -75,10 +75,6 @@ node* storeNode(node* root, char* value) {
     // Else store the node
 }
 
-void deleteNode(node* root, char* value) {
-    // Find, whether the node exists
-}
-
 node* mostTo(node* root, int side) {
     if (side < 0) { // Most to left
         if (root->leftBranch != NULL) {
@@ -91,6 +87,41 @@ node* mostTo(node* root, int side) {
     }
 
     return NULL;
+}
+
+void deleteNode(node* root, char* value) {
+    node* currentNode = root;
+
+    while (1) {
+        if (strcmp(currentNode->nodeValue, value) < 0) { // Lower than value
+            if (currentNode->rightBranch != NULL) {
+                currentNode = currentNode->rightBranch;
+            } else {
+                printf("Not found\n");
+                return;
+            }
+        } else if (strcmp(currentNode->nodeValue, value) > 0) { // Higher than value
+            if (currentNode->leftBranch != NULL) {
+                currentNode = currentNode->leftBranch;
+            } else {
+                printf("Not found\n");
+                return;
+            }
+        } else { // Same as value
+            printf("Can be deleted\n");
+            if (currentNode->leftBranch != NULL) {
+                node* test = mostTo(currentNode->leftBranch, 1);
+            } else if (currentNode->rightBranch != NULL) {
+                node* test = mostTo(currentNode->rightBranch, -1);
+            } else {
+                // There is no child - leaf node
+                // How to delete a node?
+                // Mby hold pointer to parent
+                // To be solved
+            }
+            return;
+        }
+    }
 }
 
 int main() {
