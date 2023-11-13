@@ -71,7 +71,6 @@ node* storeNode(node* root, char* value) {
 
 node* mostTo(node* root) {
     if (root->rightBranch != NULL) {
-        free(root->nodeValue);
         return mostTo(root->rightBranch);
     } else {
         return root;
@@ -97,33 +96,42 @@ node* deleteNode(node* root, char* value) {
         if (root->leftBranch == NULL && root->rightBranch == NULL) { // Leaf node - no children
             printf("Deleted\n");
 
-            //free(root->nodeValue);
-            //free(root);
+            free(root->nodeValue);
+            free(root);
             return NULL;
         } else if (root->leftBranch != NULL && root->rightBranch != NULL) { // Both children
             node* temp = mostTo(root->leftBranch);
             root = deleteNode(root, temp->nodeValue);
             root->nodeValue = temp->nodeValue;
 
-            //free(temp->nodeValue);
-            //free(temp->leftBranch);
-            //free(temp->rightBranch);
-            //free(temp);
             return root;
         } else if (root->leftBranch != NULL) { // Only left child
             printf("Deleted\n");
 
-            //free(root->nodeValue);
-            //free(root->rightBranch);
+            free(root->nodeValue);
             return root->leftBranch;
         } else if (root->rightBranch != NULL) { // Only right child
             printf("Deleted\n");
 
-            //free(root->nodeValue);
-            //free(root->leftBranch);
+            free(root->nodeValue);
             return root->rightBranch;
         }
     }
+}
+
+node* freeAll(node* root) {
+    if (root->leftBranch != NULL) {
+        root->leftBranch = freeAll(root->leftBranch);
+    }
+
+    if (root->rightBranch != NULL) {
+        root->rightBranch = freeAll(root->rightBranch);
+    }
+
+    free(root->leftBranch);
+    free(root->rightBranch);
+    free(root->nodeValue);
+    return root;
 }
 
 int main() {
@@ -165,6 +173,8 @@ int main() {
                     printf("Not found\n");
                 } else if (root->leftBranch == NULL && root->rightBranch == NULL) {
                     if (strcmp(root->nodeValue, value) == 0) {
+                        free(root->nodeValue);
+                        free(root);
                         root = NULL;
                         printf("Deleted\n");
                     } else {
@@ -177,6 +187,7 @@ int main() {
         }
     }
 
+    root = freeAll(root);
     free(root);
     return 0;
 }
