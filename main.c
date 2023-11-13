@@ -30,6 +30,7 @@ void findNode(node* root, char* value) {
                 currentNode = currentNode->rightBranch;
             } else {
                 printf("Not found\n");
+                free(value);
                 return;
             }
         } else if (strcmp(currentNode->nodeValue, value) > 0) { // Higher than value
@@ -37,10 +38,12 @@ void findNode(node* root, char* value) {
                 currentNode = currentNode->leftBranch;
             } else {
                 printf("Not found\n");
+                free(value);
                 return;
             }
         } else { // Same as value
             printf("Found\n");
+            free(value);
             return;
         }
     }
@@ -64,7 +67,8 @@ node* storeNode(node* root, char* value) {
             return root;
         }
     } else { // Same as value
-        printf("Already stored\n", value, root->nodeValue);
+        printf("Already stored\n");
+        free(value);
         return root;
     }
 }
@@ -79,22 +83,26 @@ node* mostTo(node* root) {
 
 node* deleteNode(node* root, char* value) {
     if (strcmp(root->nodeValue, value) < 0) { // Lower than value
-        if (root->rightBranch != NULL)
+        if (root->rightBranch != NULL) {
             root->rightBranch = deleteNode(root->rightBranch, value);
-        else
+        } else {
             printf("Not found\n");
+            free(value);
+        }
 
         return root;
     } else if (strcmp(root->nodeValue, value) > 0) { // Higher than value
-        if (root->leftBranch != NULL)
+        if (root->leftBranch != NULL) {
             root->leftBranch = deleteNode(root->leftBranch, value);
-        else
+        } else {
             printf("Not found\n");
+            free(value);
+        }
 
         return root;
     } else { // Same as value
         if (root->leftBranch == NULL && root->rightBranch == NULL) { // Leaf node - no children
-            printf("Deleted\n");
+            printf("Deleted leaf\n");
 
             free(root->nodeValue);
             free(root);
@@ -106,12 +114,12 @@ node* deleteNode(node* root, char* value) {
 
             return root;
         } else if (root->leftBranch != NULL) { // Only left child
-            printf("Deleted\n");
+            printf("Deleted left\n");
 
             free(root->nodeValue);
             return root->leftBranch;
         } else if (root->rightBranch != NULL) { // Only right child
-            printf("Deleted\n");
+            printf("Deleted right\n");
 
             free(root->nodeValue);
             return root->rightBranch;
@@ -136,6 +144,8 @@ node* freeAll(node* root) {
 
 int main() {
     node* root = NULL;
+
+    printf("%ld\n", sizeof(node));
 
     char action;
     while (scanf("%c: ", &action) != EOF) {
@@ -162,10 +172,13 @@ int main() {
 
                 break;
             case 'F':
-                if (root != NULL)
+                if (root != NULL) {
                     findNode(root, value);
-                else
+
+                } else {
                     printf("Not found\n");
+                    free(value);
+                }
 
                 break;
             case 'D':
@@ -183,11 +196,15 @@ int main() {
                 } else if (root != NULL) {
                     root = deleteNode(root, value);
                 }
+
+                free(value);
                 break;
         }
     }
 
-    root = freeAll(root);
+    if (root != NULL) {
+        root = freeAll(root);
+    }
     free(root);
     return 0;
 }
