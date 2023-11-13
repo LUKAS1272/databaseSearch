@@ -87,7 +87,6 @@ node* deleteNode(node* root, char* value) {
             root->rightBranch = deleteNode(root->rightBranch, value);
         } else {
             printf("Not found\n");
-            free(value);
         }
 
         return root;
@@ -96,38 +95,46 @@ node* deleteNode(node* root, char* value) {
             root->leftBranch = deleteNode(root->leftBranch, value);
         } else {
             printf("Not found\n");
-            free(value);
         }
 
         return root;
     } else { // Same as value
         if (root->leftBranch == NULL && root->rightBranch == NULL) { // Leaf node - no children
-            printf("Deleted leaf\n");
+            printf("Deleted\n");
 
             free(root->nodeValue);
             free(root);
             return NULL;
         } else if (root->leftBranch != NULL && root->rightBranch != NULL) { // Both children
-            node* temp = mostTo(root->leftBranch);
-            root = deleteNode(root, temp->nodeValue);
-            root->nodeValue = temp->nodeValue;
+            char* temp = mostTo(root->leftBranch)->nodeValue;
+            char* valueCopy = malloc(sizeof(temp));
+            strcpy(valueCopy, temp);
+
+            root = deleteNode(root, temp);
+            free(root->nodeValue);
+            root->nodeValue = valueCopy;
 
             return root;
         } else if (root->leftBranch != NULL) { // Only left child
-            printf("Deleted left\n");
+            printf("Deleted\n");
 
+            node* temp = root->leftBranch;
             free(root->nodeValue);
-            return root->leftBranch;
+            free(root);
+            return temp;
         } else if (root->rightBranch != NULL) { // Only right child
-            printf("Deleted right\n");
+            printf("Deleted\n");
 
+            node* temp = root->rightBranch;
             free(root->nodeValue);
-            return root->rightBranch;
+            free(root);
+            return temp;
         }
     }
 }
 
 node* freeAll(node* root) {
+    //printf(". ");
     if (root->leftBranch != NULL) {
         root->leftBranch = freeAll(root->leftBranch);
     }
@@ -145,7 +152,7 @@ node* freeAll(node* root) {
 int main() {
     node* root = NULL;
 
-    printf("%ld\n", sizeof(node));
+    //printf("%ld\n", sizeof(node));
 
     char action;
     while (scanf("%c: ", &action) != EOF) {
