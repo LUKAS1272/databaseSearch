@@ -107,7 +107,7 @@ node* deleteNode(node* root, char* value) {
             return NULL;
         } else if (root->leftBranch != NULL && root->rightBranch != NULL) { // Both children
             char* temp = mostTo(root->leftBranch)->nodeValue;
-            char* valueCopy = malloc(sizeof(temp));
+            char* valueCopy = malloc(strlen(temp) + 1);
             strcpy(valueCopy, temp);
 
             root = deleteNode(root, temp);

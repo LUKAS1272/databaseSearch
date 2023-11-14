@@ -1,3 +1,0 @@
-/home/lukas1272/Desktop/C/databaseSearch/cmake-build-debug/CMakeFiles/databaseSearch.dir
-/home/lukas1272/Desktop/C/databaseSearch/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/lukas1272/Desktop/C/databaseSearch/cmake-build-debug/CMakeFiles/rebuild_cache.dir
